@@ -1,8 +1,10 @@
+// ! To run Apache Benchmark run in terminal -   ab -c 50 -n 500 localhost:3000/fast
+
 const cluster = require('cluster');
 const express = require('express');
 const app = express();
 
-// ! If the file being executed in master mode?
+// * If the file being executed in master mode?
 if (cluster.isMaster) {
   // Cause index.js to be executed *again* but
   // in child mode
