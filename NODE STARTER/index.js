@@ -10,7 +10,15 @@ require('./models/Blog');
 require('./services/passport');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(keys.mongoURI, { useMongoClient: true });
+
+try {
+  async function name () {
+    await mongoose.connect(keys.mongoURI, { useMongoClient: true });
+  }
+  name();
+} catch (error) {
+  console.log(error);
+}
 
 const app = express();
 
