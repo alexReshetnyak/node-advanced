@@ -21,7 +21,7 @@ app.use(
     keys: [keys.cookieKey]
   })
 );
-app.use(passport.initialize());
+app.use(passport.initialize()); // * used for authentication
 app.use(passport.session());
 
 require('./routes/authRoutes')(app);
