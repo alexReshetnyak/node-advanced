@@ -3,6 +3,7 @@
 
 const express = require('express');
 const app = express();
+const Worker = require('webworker-threads').Worker;
 
 // * If the file being executed in master mode?
 
@@ -12,7 +13,24 @@ function doWork(duration) {
 }
 
 app.get('/', (req, res) => {
-  doWork(5000);
+  const worker = new Worker(function () {
+    this.onmessage = function () {
+      let counter = 0;
+      while (counter < 1e9) {
+        counter++;
+      }
+
+      postMessage(counter);
+    }    
+  });
+
+  worker.onmessage = function (result) {
+    console.log(result);
+    res.send(result.data + '')
+  }
+
+  worker.postMessage();
+
   res.send('Hi there');
 });
 
@@ -20,4 +38,4 @@ app.get('/fast', (req, res) => {
   res.send('Hi there FAST');
 });
 
-app.listen(3001);
+app.listen(3001, () => console.log('Serve Listen on port 3001...'));
