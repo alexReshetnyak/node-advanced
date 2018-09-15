@@ -1,32 +1,24 @@
 // ! To run Apache Benchmark run in terminal -   ab -c 50 -n 500 localhost:3000/fast
+process.env.UV_TREADPOOL_SIZE = 1;
+// ! start using pm2 - pm2 start index.js -i 0
+// * -i 0 - it means that number of instances will be equal to cpu cores
 
-const cluster = require('cluster');
 const express = require('express');
 const app = express();
+const crypto = require('crypto');
 
-// * If the file being executed in master mode?
-if (cluster.isMaster) {
-  // Cause index.js to be executed *again* but
-  // in child mode
-  cluster.fork();
-  cluster.fork();
-  cluster.fork();
-  cluster.fork();
-} else {
-  // I'm child, I'm going to act like a server and do nothing else
-  function doWork(duration) {
-    const start = Date.now();
-    while (Date.now() - start < duration) {};
-  }
 
-  app.get('/', (req, res) => {
-    doWork(5000);
+app.get('/', (req, res) => {
+  crypto.pbkdf2('a', 'b', 100000, 512, 'sha512', () => {
     res.send('Hi there');
   });
+  // setTimeout(() => {
+  //   res.send('Hi there');
+  // }, 1000);
+});
 
-  app.get('/fast', (req, res) => {
-    res.send('Hi there FAST');
-  });
+app.get('/fast', (req, res) => {
+  res.send('Hi there FAST');
+});
 
-  app.listen(3000);
-}
+app.listen(3000);
