@@ -1,4 +1,6 @@
 
+jest.setTimeout(30000); // * wait any callbacks 30s before trigger error message ( by default 5s )
+
 require('../models/User');
 
 const mongoose = require('mongoose');
